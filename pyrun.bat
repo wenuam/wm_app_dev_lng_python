@@ -1,5 +1,9 @@
 @echo off && setlocal enabledelayedexpansion
 
+rem Save code page then set it to utf-8 (/!\ this file MUST be in utf-8)
+for /f "tokens=2 delims=:." %%x in ('chcp') do set cp=%%x
+chcp 65001>nul
+
 rem Python runner
 rem   (can be used for any project)
 
@@ -56,6 +60,9 @@ if "%1" == "cmd" set "todo=cmd"
 if "%todo%" == "cmd" (
 	start "" /d "%cd%" "cmd" ""
 )
+
+rem Restore save code page
+chcp %cp%>nul
 
 goto :eof
 

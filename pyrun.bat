@@ -37,7 +37,7 @@ if "%1" == "install" set "todo=inst"
 if not exist "%GET_PIP%" set "todo=inst"
 if "%todo%" == "inst" (
 	call :py_install
-	echo.
+	echo Installation done...
 )
 
 rem Execution : 'run' or nothing (default)
@@ -46,11 +46,13 @@ if "%1" == "run" set "todo=run"
 if "%todo%" == "run" (
 	if not "%2" == "" (
 		rem Run specified client (in '%PYTHONROOT%\Scripts')
+		echo Running specified "%2.exe"...
 		"%2"
 	) else (
 		rem Run default client (same name as batch file)
+		echo Running default "%~n0.py"...
 		"%PYTHONROOT%\python" "%~n0.py"
-		echo.
+		echo;
 	)
 )
 
@@ -58,10 +60,11 @@ rem Command line : 'cmd'
 rem   (useful to launch commands by hand with a configured Python setup)
 if "%1" == "cmd" set "todo=cmd"
 if "%todo%" == "cmd" (
+	echo Opening pre-configured "cmd" console...
 	start "" /d "%cd%" "cmd" ""
 )
 
-rem Restore save code page
+rem Restore saved code page
 chcp %cp%>nul
 
 goto :eof
@@ -78,43 +81,130 @@ rem - - - Subroutines - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	rem === Install and update PIP (https://pypi.org/project/pip/)
 	if not exist "%GET_PIP%" (
 		curl "%BOOTSTRAP_URL%" >"%GET_PIP%" && (
+			echo Installing "%BOOTSTRAP_URL%"...
 			"%PYTHONROOT%\python" "%GET_PIP%"
 		) || (
 			echo Cannot get "%BOOTSTRAP_URL%"...
 		)
 	)
 
-	call :pip_install pip
-	REM pip cache dir
-	REM pip cache purge
+	if "1"=="1" (
+		call :pip_install pip
+REM		pip cache dir
+REM		pip cache purge
+	)
 
-	if "0"=="" (
 	rem === VENV and stuff (doesn't quite work as expected though)
-	REM call :pip_install virtualenv
-	REM call :pip_install virtualenvwrapper-win
-	REM cd %USERPROFILE%\Envs
-	REM cd %WORKON_HOME%
+	if ""=="1" (
+REM		call :pip_install virtualenv
+REM		call :pip_install virtualenvwrapper-win
+REM		cd %USERPROFILE%\Envs
+REM		cd %WORKON_HOME%
+	)
+
+	rem === Path and folder
+	if ""=="1" (
+		call :pip_install pyfolder
+		call :pip_install pyzip
+REM		call :pip_install remotezip
+	)
+
+	rem === Editor
+	if ""=="1" (
+REM		call :pip_install ash-editor
+		call :pip_install suplemon
+REM		call :pip_install tui-editor
+	)
+
+	rem === Debugging
+	if ""=="1" (
+		call :pip_install better_exceptions
+REM		call :pip_install boofuzz
+REM		call :pip_install ddebug
+REM		call :pip_install epdb
+		call :pip_install icecream
+		call :pip_install objprint
+		call :pip_install pdbpp
+		call :pip_install pretty_errors
+REM		call :pip_install prettyexc
+REM		call :pip_install profiling
+		call :pip_install pudb
+		call :pip_install PySnooper
+		call :pip_install snoop
+REM		call :pip_install snoop-tensor
+		call :pip_install stackprinter
+REM		call :pip_install torchsnooper
+REM		call :pip_install undent
+		call :pip_install viztracer
+REM		call :pip_install vizplugins
+REM		call :pip_install voltron
+REM		call :pip_install watchpoints
+REM		call :pip_install web-pdb
+	)
+
+	rem === Hot reloading
+	if ""=="1" (
+REM		call :pip_install hotreload
+		call :pip_install jurigged
+REM		call :pip_install python-hmr
+		call :pip_install reloadium
+	)
+
+	rem === Binary parser
+	if ""=="1" (
+REM		call :pip_install auto-struct
+REM		call :pip_install binmap
+REM		call :pip_install bread
+REM		call :pip_install construct
+REM		call :pip_install construct-classes
+REM		call :pip_install construct-editor
+REM		call :pip_install construct-typing
+		call :pip_install deconstruct
+REM		call :pip_install destructify
+		call :pip_install hachoir
+		call :pip_install iofree
+REM		call :pip_install pabo
+		call :pip_install structures
 	)
 
 	rem === Gui related (enaml, declarative and functional oriented)
-	REM call :pip_install rtree
-	REM call :pip_install intervaltree
-	REM call :pip_install traits
-	REM call :pip_install vtk
-	REM call :pip_install qtpy
-	REM call :pip_install enaml
+	if ""=="1" (
+REM		call :pip_install rtree
+REM		call :pip_install intervaltree
+REM		call :pip_install traits
+REM		call :pip_install vtk
+		call :pip_install qtpy
+		call :pip_install qasync
+REM		call :pip_install PySide6
+		call :pip_install enaml
+	)
 
 	rem === Gui related (enamlx, maybe outdated a bit)
-	REM call :pip_install pyqtgraph
-	REM call :pip_install enamlx
+	if ""=="1" (
+		call :pip_install pyqtgraph
+		call :pip_install enamlx
+	)
 
 	rem === Gui related (enaml-web, maybe not mature)
-	REM call :pip_install enaml-web
+	if ""=="1" (
+		call :pip_install enaml-web
+	)
+
+	rem === Opcua related (aka FreeOpcUa/opcua-asyncio, some Qt5 dependencies)
+	if ""=="1" (
+		call :pip_install asyncua
+		call :pip_install opcua
+		call :pip_install opcua-webclient
+		call :pip_install opcua-client
+		call :pip_install opcua-modeler
+		call :pip_install "git+https://github.com/PrediktorAS/opcua-tools.git"
+	)
 goto :eof
 
 :pip_install
-	echo.
-	echo Installing "%~1"...
-	echo.
-	"%PYTHONROOT%\python" -m pip install %PIP_PATH% %PIP_OPTS% --upgrade %~1
+	echo;
+	echo; - - - Installing "%~1" - - - - - - - - - - - - - - - - - - - - - - - -
+	echo;
+	"%PYTHONROOT%\python" -m pip install %PIP_PATH% %PIP_OPTS% --upgrade %~1  | findstr /V /C:"already satisfied"
+	rem set -o pipefail; pip install -r requirements.txt | { grep -v "already satisfied" || :; }
 goto :eof

@@ -1,5 +1,5 @@
 @echo off && setlocal enabledelayedexpansion
-if "%~dp0" neq "%tmp%\" (set "cd=%~dp0" & (if not exist "%tmp%\%~nx0" (find "" /v<"%~f0" >"%tmp%\%~nx0")) & call "%tmp%\%~nx0" %* & del "%tmp%\%~nx0" 2>nul & exit /b) else (if "%cd:~-1%"=="\" set "cd=%cd:~0,-1%")
+if "%~dp0" neq "%tmp%\%guid%\" (set "guid=%~nx0.%~z0" & set "cd=%~dp0" & (if not exist "%tmp%\%~nx0.%~z0\%~nx0" (mkdir "%tmp%\%~nx0.%~z0" 2>nul & find "" /v<"%~f0" >"%tmp%\%~nx0.%~z0\%~nx0")) & call "%tmp%\%~nx0.%~z0\%~nx0" %* & rmdir /s /q "%tmp%\%~nx0.%~z0" 2>nul & exit /b) else (if "%cd:~-1%"=="\" set "cd=%cd:~0,-1%")
 
 rem Save code page then set it to utf-8 (/!\ this file MUST be in utf-8)
 for /f "tokens=2 delims=:." %%x in ('chcp') do set cp=%%x
@@ -19,7 +19,11 @@ rem https://docs.python.org/3/using/cmdline.html#environment-variables
 set "PYTHONROOT=%cd%\Python"
 set "PYTHONPATH=%PYTHONROOT%;%PYTHONROOT%\DLLs;%PYTHONROOT%\Lib"
 
-set "PATH=%PATH%;%PYTHONROOT%;%PYTHONROOT%\Scripts"
+set "PATH=%PATH%;%PYTHONROOT%"
+set "PATH=%PATH%;%PYTHONROOT%\Scripts"
+
+rem Clean PATH
+set "PATH=%PATH:\\=\%"
 set "PATH=%PATH:;;=;%"
 set "PATH=%PATH: ;=;%"
 set "PATH=%PATH:; =;%"
@@ -117,6 +121,19 @@ REM		call :pip_install ash-editor
 REM		call :pip_install tui-editor
 	)
 
+	rem === Tui related
+	if ""=="1" (
+		call :pip_install Pygments
+		call :pip_install pytermgui
+		call :pip_install pyTermTk
+		call :pip_install rich
+		call :pip_install rich-cli
+		call :pip_install textual
+		call :pip_install tlogg
+		call :pip_install ttkode
+		call :pip_install urwid
+	)
+
 	rem === Debugging
 	if ""=="1" (
 		call :pip_install better_exceptions
@@ -126,11 +143,13 @@ REM		call :pip_install epdb
 		call :pip_install icecream
 		call :pip_install objprint
 		call :pip_install pdbpp
+		call :pip_install pdbr
 		call :pip_install pretty_errors
 REM		call :pip_install prettyexc
 REM		call :pip_install profiling
 		call :pip_install pudb
 		call :pip_install PySnooper
+REM		call :pip_install scalene
 		call :pip_install snoop
 REM		call :pip_install snoop-tensor
 		call :pip_install stackprinter
@@ -189,6 +208,25 @@ REM		call :pip_install PySide6
 	rem === Gui related (enaml-web, maybe not mature)
 	if ""=="1" (
 		call :pip_install enaml-web
+	)
+
+	rem === Wui
+	if ""=="1" (
+		call :pip_install pyodide
+		call :pip_install shiny
+	)
+
+	rem === Cryptography
+	if ""=="1" (
+		call :pip_install ciphey
+	)
+
+	rem === Generative AI
+	if ""=="1" (
+		call :pip_install discoart
+		call :pip_install docarray
+		call :pip_install jina
+REM		call :pip_install norfair
 	)
 
 	rem === Opcua related (aka FreeOpcUa/opcua-asyncio, some Qt5 dependencies)

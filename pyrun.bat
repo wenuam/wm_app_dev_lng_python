@@ -1,6 +1,10 @@
 @echo off && setlocal enabledelayedexpansion
 if "%~dp0" neq "%tmp%\%guid%\" (set "guid=%~nx0.%~z0" & set "cd=%~dp0" & (if not exist "%tmp%\%~nx0.%~z0\%~nx0" (mkdir "%tmp%\%~nx0.%~z0" 2>nul & find "" /v<"%~f0" >"%tmp%\%~nx0.%~z0\%~nx0")) & call "%tmp%\%~nx0.%~z0\%~nx0" %* & rmdir /s /q "%tmp%\%~nx0.%~z0" 2>nul & exit /b) else (if "%cd:~-1%"=="\" set "cd=%cd:~0,-1%")
 
+rem Install Python environment variables and packages before running %~n0.py file, by wenuam 2022-2023
+rem '%~n0.bat inst' : install packages (pip, ...)
+rem '%~n0.bat cmd' : open cmd with Python env var
+
 rem Save code page then set it to utf-8 (/!\ this file MUST be in utf-8)
 for /f "tokens=2 delims=:." %%x in ('chcp') do set cp=%%x
 chcp 65001>nul
@@ -22,6 +26,13 @@ set "PYTHONPATH=%PYTHONROOT%;%PYTHONROOT%\DLLs;%PYTHONROOT%\Lib"
 set "PATH=%PATH%;%PYTHONROOT%"
 set "PATH=%PATH%;%PYTHONROOT%\Scripts"
 
+echo cd=%cd%
+
+rem Additional path
+set "PATH=%PATH%;%cd%\Graphviz\bin"
+set "PATH=%PATH%;%cd%\pandoc"
+set "PLANTUML_PATH=%cd%\plantuml\plantuml.jar"
+
 rem Clean PATH
 set "PATH=%PATH:\\=\%"
 set "PATH=%PATH:;;=;%"
@@ -32,16 +43,20 @@ rem echo %PATH%
 rem Local constants
 set "PIP_PATH="
 set "PIP_OPTS=--no-cache-dir"
-set "GET_PIP=get-pip.py"
-set "BOOTSTRAP_URL=https://bootstrap.pypa.io/%GET_PIP%"
+set "PIP_PROX=--proxy=^"http://gateway.schneider.zscaler.net:80^""
+set "PIP_FILE=get-pip.py"
+set "BOOTSTRAP_URL=https://bootstrap.pypa.io/%PIP_FILE%"
+
+echo PIP_PROX=%PIP_PROX%
 
 rem Installation : 'install' (default if 'get-pip.py' not present)
 rem   (could be quite long depending on the packages to install)
 if "%1" == "inst" set "todo=inst"
 if "%1" == "install" set "todo=inst"
-if not exist "%GET_PIP%" set "todo=inst"
+if not exist "%PIP_FILE%" set "todo=inst"
 if "%todo%" == "inst" (
 	call :py_install
+	echo;
 	echo Installation done...
 )
 
@@ -84,45 +99,52 @@ rem - - - Subroutines - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	rem https://docs.python.org/3/using/windows.html#installing-without-ui
 
 	rem === Install and update PIP (https://pypi.org/project/pip/)
-	if not exist "%GET_PIP%" (
-		curl "%BOOTSTRAP_URL%" >"%GET_PIP%" && (
+	if not exist "%PIP_FILE%" (
+		curl "%BOOTSTRAP_URL%" >"%PIP_FILE%" && (
 			echo Installing "%BOOTSTRAP_URL%"...
-			"%PYTHONROOT%\python" "%GET_PIP%"
+			"%PYTHONROOT%\python" "%PIP_FILE%"
 		) || (
 			echo Cannot get "%BOOTSTRAP_URL%"...
 		)
 	)
 
-	if "1"=="1" (
+	if not "1"=="" (
 		call :pip_install pip
 REM		pip cache dir
 REM		pip cache purge
 	)
 
 	rem === VENV and stuff (doesn't quite work as expected though)
-	if ""=="1" (
+	if not ""=="" (
 REM		call :pip_install virtualenv
 REM		call :pip_install virtualenvwrapper-win
 REM		cd %USERPROFILE%\Envs
 REM		cd %WORKON_HOME%
 	)
 
+	rem === OpenAPI
+	if not ""=="" (
+REM		call :pip_install datamodel-code-generator
+		call :pip_install openapi-fastapi-client
+REM		call :pip_install fastapi-code-generator
+	)
+
 	rem === Path and folder
-	if ""=="1" (
+	if not ""=="" (
 		call :pip_install pyfolder
 		call :pip_install pyzip
 REM		call :pip_install remotezip
 	)
 
 	rem === Editor
-	if ""=="1" (
+	if not ""=="" (
 REM		call :pip_install ash-editor
 		call :pip_install suplemon
 REM		call :pip_install tui-editor
 	)
 
 	rem === Tui related
-	if ""=="1" (
+	if not ""=="" (
 		call :pip_install Pygments
 		call :pip_install pytermgui
 		call :pip_install pyTermTk
@@ -135,7 +157,7 @@ REM		call :pip_install tui-editor
 	)
 
 	rem === Debugging
-	if ""=="1" (
+	if not ""=="" (
 		call :pip_install better_exceptions
 REM		call :pip_install boofuzz
 REM		call :pip_install ddebug
@@ -163,7 +185,7 @@ REM		call :pip_install web-pdb
 	)
 
 	rem === Hot reloading
-	if ""=="1" (
+	if not ""=="" (
 REM		call :pip_install hotreload
 		call :pip_install jurigged
 REM		call :pip_install python-hmr
@@ -171,7 +193,7 @@ REM		call :pip_install python-hmr
 	)
 
 	rem === Binary parser
-	if ""=="1" (
+	if not ""=="" (
 REM		call :pip_install auto-struct
 REM		call :pip_install binmap
 REM		call :pip_install bread
@@ -188,41 +210,45 @@ REM		call :pip_install pabo
 	)
 
 	rem === Gui related (enaml, declarative and functional oriented)
-	if ""=="1" (
+	if not ""=="" (
 REM		call :pip_install rtree
 REM		call :pip_install intervaltree
 REM		call :pip_install traits
 REM		call :pip_install vtk
 		call :pip_install qtpy
 		call :pip_install qasync
+		call :pip_install PyQt5
 REM		call :pip_install PySide6
 		call :pip_install enaml
 	)
 
 	rem === Gui related (enamlx, maybe outdated a bit)
-	if ""=="1" (
+	if not ""=="" (
 		call :pip_install pyqtgraph
 		call :pip_install enamlx
 	)
 
 	rem === Gui related (enaml-web, maybe not mature)
-	if ""=="1" (
+	if not ""=="" (
 		call :pip_install enaml-web
+		call :pip_install materialize-ui
+		call :pip_install tornado
+		call :pip_install pandas
 	)
 
 	rem === Wui
-	if ""=="1" (
+	if not ""=="" (
 		call :pip_install pyodide
 		call :pip_install shiny
 	)
 
 	rem === Cryptography
-	if ""=="1" (
+	if not ""=="" (
 		call :pip_install ciphey
 	)
 
 	rem === Generative AI
-	if ""=="1" (
+	if not ""=="" (
 		call :pip_install discoart
 		call :pip_install docarray
 		call :pip_install jina
@@ -230,13 +256,24 @@ REM		call :pip_install norfair
 	)
 
 	rem === Opcua related (aka FreeOpcUa/opcua-asyncio, some Qt5 dependencies)
-	if ""=="1" (
+	if not ""=="" (
 		call :pip_install asyncua
 		call :pip_install opcua
 		call :pip_install opcua-webclient
 		call :pip_install opcua-client
 		call :pip_install opcua-modeler
 		call :pip_install "git+https://github.com/PrediktorAS/opcua-tools.git"
+	)
+
+	rem === Graph
+	if not ""=="" (
+		call :pip_install blockdiag
+		call :pip_install diagrams
+	)
+
+	rem === Threat modelling
+	if not ""=="" (
+		call :pip_install "git+https://github.com/izar/pytm.git"
 	)
 goto :eof
 

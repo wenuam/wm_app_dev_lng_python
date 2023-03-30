@@ -45,13 +45,14 @@ REM	echo Check dependencies...
 REM	call :check_prog "todo"
 
 REM	echo List input...
+	del "%clst%" %fquiet%
 	if !vchk! equ 1 (
-REM		echo ...file
-		findstr %cstr% /C:"import %clib%" "%~1">"%clst%"
+REM		echo   ...file
+		findstr %cstr% /C:"import %clib%" "%~1">>"%clst%"
 		findstr %cstr% /C:"from %clib%" "%~1" >>"%clst%"
 	) else if !vchk! equ 2 (
-REM		echo ...folder
-		findstr %cstr% /C:"import %clib%" "%~f1\*%cext%">"%clst%"
+REM		echo   ...folder
+		findstr %cstr% /C:"import %clib%" "%~f1\*%cext%">>"%clst%"
 		findstr %cstr% /C:"from %clib%" "%~f1\*%cext%" >>"%clst%"
 	)
 
@@ -63,19 +64,27 @@ REM	echo Run pytm...
 		for /f "delims=" %%i in (%clst%) do (
 REM			echo   Analysing %%~nxi...
 
-REM			set "vdir=%%~dpi\"
-			set "vdir=%%~dpi\%~n0\%%~ni"
+			rem Set and clean-up destination folder
+REM			set "vdir=%%~dpi"
+			set "vdir=%%~dpi\%%~ni"
+REM			set "vdir=%%~dpi\%~n0\%%~ni"
 			set "vdir=!vdir:\\=\!"
-REM			echo "!vdir!\%crep%"
-REM			echo "%%~fi"
+			for /l %%l in (1,1,2) do if "!vdir:~-1!"=="\" set "vdir=!vdir:~0,-1!"
 
+REM			echo vdir=!vdir!
+
+			rem Create destination folder
 			if not exist "!vdir!\*" (
 				mkdir "!vdir!" 2>nul
 			)
 
+			rem Set destination file
 			set "vout=!vdir!\%crep%"
 			set /a "vchk=0"
 
+REM			echo vout=!vout!
+
+			rem Check destination file presence and date
 			if exist "!vout!" (
 				xcopy /D /L /Y "%%~fi" "!vout!" | findstr /BC:"1 ">nul && set /a "vchk=2"
 			) else (
@@ -84,6 +93,7 @@ REM			echo "%%~fi"
 
 REM			echo vchk=!vchk!
 
+			rem Only if destination file absent or older
 			if !vchk! gtr 0 (
 				set "vdisp=%%~fi"
 				set "vdisp=!vdisp:%cd%=.!"

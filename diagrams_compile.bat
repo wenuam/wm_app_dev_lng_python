@@ -40,13 +40,14 @@ REM	echo Check dependencies...
 REM	call :check_prog "todo"
 
 REM	echo List input...
+	del "%clst%" %fquiet%
 	if !vchk! equ 1 (
-REM		echo ...file
-		findstr %cstr% /C:"import %clib%" "%~1">"%clst%"
+REM		echo   ...file
+		findstr %cstr% /C:"import %clib%" "%~1">>"%clst%"
 		findstr %cstr% /C:"from %clib%" "%~1" >>"%clst%"
 	) else if !vchk! equ 2 (
-REM		echo ...folder
-		findstr %cstr% /C:"import %clib%" "%~f1\*%cext%">"%clst%"
+REM		echo   ...folder
+		findstr %cstr% /C:"import %clib%" "%~f1\*%cext%">>"%clst%"
 		findstr %cstr% /C:"from %clib%" "%~f1\*%cext%" >>"%clst%"
 	)
 
@@ -58,6 +59,7 @@ REM	echo Run pytm...
 		for /f "delims=" %%i in (%clst%) do (
 REM			echo   Analysing %%~nxi...
 
+            rem Looking for output filename (specific to Diagrams)
 			for /f "tokens=1* delims=:" %%j in ('findstr /n /c:"with Diagram" "%%~fi"') do (
 				rem Check output filename format
 REM				echo j=%%j, k=%%k
@@ -80,20 +82,28 @@ REM						echo l=%%l, m=%%m, n=%%n, o=%%o
 				)
 			)
 
-REM			set "vdir=%%~dpi\"
-			set "vdir=%%~dpi\%~n0\%%~ni"
-			set "vdir=!vdir:\\=\!"
-REM			echo "%%~fi"
+REM			echo vrep=!vrep!
 
+			rem Set and clean-up destination folder
+			set "vdir=%%~dpi"
+REM			set "vdir=%%~dpi\%~n0\%%~ni"
+			set "vdir=!vdir:\\=\!"
+			for /l %%l in (1,1,2) do if "!vdir:~-1!"=="\" set "vdir=!vdir:~0,-1!"
+
+REM			echo vdir=!vdir!
+
+			rem Create destination folder
 			if not exist "!vdir!\*" (
 				mkdir "!vdir!" 2>nul
 			)
 
-REM			echo vrep=!vrep!
-
+			rem Set destination file
 			set "vout=!vdir!\!vrep!.%cout%"
 			set /a "vchk=0"
 
+REM			echo vout=!vout!
+
+			rem Check destination file presence and date
 			if exist "!vout!" (
 				xcopy /D /L /Y "%%~fi" "!vout!" | findstr /BC:"1 ">nul && set /a "vchk=2"
 			) else (
@@ -102,6 +112,7 @@ REM			echo vrep=!vrep!
 
 REM			echo vchk=!vchk!
 
+			rem Only if destination file absent or older
 			if !vchk! gtr 0 (
 				set "vdisp=%%~fi"
 				set "vdisp=!vdisp:%cd%=.!"

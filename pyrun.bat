@@ -9,36 +9,38 @@ rem Save code page then set it to utf-8 (/!\ this file MUST be in utf-8)
 for /f "tokens=2 delims=:." %%x in ('chcp') do set cp=%%x
 chcp 65001>nul
 
+rem Set "quiet" suffixes
+set "quiet=1>nul 2>nul"
+set "fquiet=/f /q 1>nul 2>nul"
+
 rem Python runner
 rem   (can be used for any project)
 
 cls
 echo Running "%~f0" :
 
-set "quiet=1>nul 2>nul"
-set "fquiet=/f /q 1>nul 2>nul"
-
 rem === Setup PYTHON local path (maybe duplicates)
 rem https://docs.python.org/3/using/cmdline.html#environment-variables
 set "PYTHONROOT=%cd%\Python"
 set "PYTHONPATH=%PYTHONROOT%;%PYTHONROOT%\DLLs;%PYTHONROOT%\Lib"
 
-set "PATH=%PATH%;%PYTHONROOT%"
-set "PATH=%PATH%;%PYTHONROOT%\Scripts"
+set "PATH=!PATH!;%PYTHONROOT%"
+set "PATH=!PATH!;%PYTHONROOT%\Scripts"
 
 echo cd=%cd%
 
 rem Additional path
-set "PATH=%PATH%;%cd%\Graphviz\bin"
-set "PATH=%PATH%;%cd%\pandoc"
+set "PATH=!PATH!;%cd%\Graphviz\bin"
+set "PATH=!PATH!;%cd%\pandoc"
 set "PLANTUML_PATH=%cd%\plantuml\plantuml.jar"
 
 rem Clean PATH
-set "PATH=%PATH:\\=\%"
-set "PATH=%PATH:;;=;%"
-set "PATH=%PATH: ;=;%"
-set "PATH=%PATH:; =;%"
-rem echo %PATH%
+set "PATH=!PATH:\\=\!"
+set "PATH=!PATH:;;=;!"
+set "PATH=!PATH: ;=;!"
+set "PATH=!PATH:; =;!"
+if "!PATH:~-1!"==";" set "PATH=!PATH:~0,-1!"
+rem echo !PATH!
 
 rem Local constants
 set "PIP_PATH="
@@ -124,13 +126,27 @@ REM		cd %WORKON_HOME%
 
 	rem === OpenAPI
 	if not ""=="" (
+REM		call :pip_install joey
 REM		call :pip_install datamodel-code-generator
+		call :pip_install openapi-fastapi-client
 		call :pip_install openapi-fastapi-client
 REM		call :pip_install fastapi-code-generator
 	)
 
+	rem === Async
+	if not ""=="" (
+REM		call :pip_install curio
+		call :pip_install trio
+	)
+
 	rem === Path and folder
 	if not ""=="" (
+		call :pip_install dictdatabase
+		call :pip_install itemdb
+		call :pip_install "git+https://github.com/thejens/loren.git"
+		call :pip_install dict-path
+		call :pip_install path-dict
+		call :pip_install folder-dict
 		call :pip_install pyfolder
 		call :pip_install pyzip
 REM		call :pip_install remotezip
@@ -201,12 +217,18 @@ REM		call :pip_install construct
 REM		call :pip_install construct-classes
 REM		call :pip_install construct-editor
 REM		call :pip_install construct-typing
+REM		call :pip_install construct-gallery
 		call :pip_install deconstruct
 REM		call :pip_install destructify
 		call :pip_install hachoir
 		call :pip_install iofree
 REM		call :pip_install pabo
 		call :pip_install structures
+	)
+
+	rem === Gui related (wxPython, official wxWidgets' interface)
+	if not ""=="" (
+		call :pip_install wxPython
 	)
 
 	rem === Gui related (enaml, declarative and functional oriented)
@@ -226,6 +248,13 @@ REM		call :pip_install PySide6
 	if not ""=="" (
 		call :pip_install pyqtgraph
 		call :pip_install enamlx
+		call :pip_install enaml-extensions
+		call :pip_install enaml-coverage-plugin
+		call :pip_install ae-enaml-app
+REM		call :pip_install gild[qt5-pyqt]
+REM		call :pip_install gild[qt5-pyside]
+REM		call :pip_install gild[qt6-pyqt]
+REM		call :pip_install gild[qt6-pyside]
 	)
 
 	rem === Gui related (enaml-web, maybe not mature)
@@ -234,6 +263,16 @@ REM		call :pip_install PySide6
 		call :pip_install materialize-ui
 		call :pip_install tornado
 		call :pip_install pandas
+	)
+
+	rem === Gui related (enaml-native)
+	if not ""=="" (
+		call :pip_install enaml-native
+		call :pip_install enaml-native-cli
+		call :pip_install enaml-native-icons
+		call :pip_install enaml-native-barcode
+		call :pip_install enaml-native-charts
+		call :pip_install enaml-native-maps
 	)
 
 	rem === Wui

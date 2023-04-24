@@ -30,9 +30,16 @@ set "PATH=!PATH!;%PYTHONROOT%\Scripts"
 echo cd=%cd%
 
 rem Additional path
-set "PATH=!PATH!;%cd%\Graphviz\bin"
-set "PATH=!PATH!;%cd%\pandoc"
-set "PLANTUML_PATH=%cd%\plantuml\plantuml.jar"
+
+set "cset=set_path.txt"
+if exist "%cset%" (
+	for /f "tokens=1* delims=?" %%i in (%cset%) do (
+		set "vset=%%~fi"
+		set "PATH=!PATH!;!vset!"
+	)
+)
+
+set "PLANTUML_PATH=%cd%\Tools\plantuml\plantuml.jar"
 
 rem Clean PATH
 set "PATH=!PATH:\\=\!"
@@ -40,7 +47,7 @@ set "PATH=!PATH:;;=;!"
 set "PATH=!PATH: ;=;!"
 set "PATH=!PATH:; =;!"
 if "!PATH:~-1!"==";" set "PATH=!PATH:~0,-1!"
-rem echo !PATH!
+REM	echo path=!PATH!
 
 rem Local constants
 set "PIP_PATH="

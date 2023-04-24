@@ -29,8 +29,7 @@ set "PATH=!PATH!;%PYTHONROOT%\Scripts"
 
 echo cd=%cd%
 
-rem Additional path
-
+rem Set PATH with tools
 set "cset=set_path.txt"
 if exist "%cset%" (
 	for /f "tokens=1* delims=?" %%i in (%cset%) do (
@@ -39,8 +38,6 @@ if exist "%cset%" (
 	)
 )
 
-set "PLANTUML_PATH=%cd%\Tools\plantuml\plantuml.jar"
-
 rem Clean PATH
 set "PATH=!PATH:\\=\!"
 set "PATH=!PATH:;;=;!"
@@ -48,6 +45,9 @@ set "PATH=!PATH: ;=;!"
 set "PATH=!PATH:; =;!"
 if "!PATH:~-1!"==";" set "PATH=!PATH:~0,-1!"
 REM	echo path=!PATH!
+
+rem Additional path
+set "PLANTUML_PATH=%cd%\Tools\plantuml\plantuml.jar"
 
 rem Local constants
 set "PIP_PATH="
@@ -164,6 +164,12 @@ REM		call :pip_install remotezip
 REM		call :pip_install ash-editor
 		call :pip_install suplemon
 REM		call :pip_install tui-editor
+	)
+
+	rem === Documentation
+	if not ""=="" (
+		call :pip_install griffe
+		call :pip_install Sphinx
 	)
 
 	rem === Tui related

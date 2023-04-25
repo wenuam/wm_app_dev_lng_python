@@ -136,7 +136,6 @@ REM		cd %WORKON_HOME%
 REM		call :pip_install joey
 REM		call :pip_install datamodel-code-generator
 		call :pip_install openapi-fastapi-client
-		call :pip_install openapi-fastapi-client
 REM		call :pip_install fastapi-code-generator
 	)
 
@@ -150,10 +149,11 @@ REM		call :pip_install curio
 	if not ""=="" (
 		call :pip_install dictdatabase
 		call :pip_install itemdb
+		call :pip_install edict
 		call :pip_install "git+https://github.com/thejens/loren.git"
 		call :pip_install dict-path
 		call :pip_install path-dict
-		call :pip_install folder-dict
+REM		call :pip_install folder-dict
 		call :pip_install pyfolder
 		call :pip_install pyzip
 REM		call :pip_install remotezip
@@ -262,8 +262,8 @@ REM		call :pip_install PySide6
 		call :pip_install pyqtgraph
 		call :pip_install enamlx
 		call :pip_install enaml-extensions
-		call :pip_install enaml-coverage-plugin
-		call :pip_install ae-enaml-app
+REM		call :pip_install enaml-coverage-plugin
+REM		call :pip_install ae-enaml-app
 REM		call :pip_install gild[qt5-pyqt]
 REM		call :pip_install gild[qt5-pyside]
 REM		call :pip_install gild[qt6-pyqt]
@@ -314,7 +314,19 @@ REM		call :pip_install norfair
 		call :pip_install opcua-webclient
 		call :pip_install opcua-client
 		call :pip_install opcua-modeler
-		call :pip_install "git+https://github.com/PrediktorAS/opcua-tools.git"
+REM		call :pip_install "git+https://github.com/PrediktorAS/opcua-tools.git"
+	)
+
+	rem === ZigBee related
+	if not ""=="" (
+		call :pip_install zigpy
+		call :pip_install zigpy-cli
+		call :pip_install zigpy-xbee
+		call :pip_install zigpy-znp
+		call :pip_install zigpy-cc
+		call :pip_install bellows
+		call :pip_install zha-quirks
+REM		call :pip_install zigpy-homeassistant
 	)
 
 	rem === Graph

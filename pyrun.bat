@@ -23,6 +23,7 @@ rem === Setup PYTHON local path (maybe duplicates)
 rem https://docs.python.org/3/using/cmdline.html#environment-variables
 set "PYTHONROOT=%cd%\Python"
 set "PYTHONPATH=%PYTHONROOT%;%PYTHONROOT%\DLLs;%PYTHONROOT%\Lib"
+set "PYTHONSITE=%PYTHONROOT%\Lib\site-packages"
 
 set "PATH=!PATH!;%PYTHONROOT%"
 set "PATH=!PATH!;%PYTHONROOT%\Scripts"
@@ -91,6 +92,19 @@ if "%1" == "cmd" set "todo=cmd"
 if "%todo%" == "cmd" (
 	echo Opening pre-configured "cmd" console...
 	start "" /d "%cd%" "cmd" ""
+)
+
+rem Command line : 'inspect'
+rem   (useful to inspect installed packages, needs docutils-markdown-PyQt5)
+if "%1" == "insp" set "todo=insp"
+if "%1" == "inspect" set "todo=insp"
+if "%todo%" == "insp" (
+	call :pip_check docutils
+	call :pip_check markdown
+	call :pip_check PyQt5
+
+	echo Opening the "inspector"...
+	start "" /d "%PYTHONROOT%" "python" "%cd%\Tools\pyspector\src\main.py"
 )
 
 rem Restore saved code page
@@ -183,6 +197,19 @@ REM		call :pip_install tui-editor
 		call :pip_install tlogg
 		call :pip_install ttkode
 		call :pip_install urwid
+	)
+
+	rem === Inspection
+	if not ""=="" (
+		call :pip_install inspect-extensions
+		call :pip_install pipspect
+REM		call :pip_install inspectshow
+REM		call :pip_install "git+https://github.com/vadivelmurugank/inspectshow.git"
+REM		call :pip_install pyexplorer
+REM		call :pip_install "git+https://github.com/dexpota/pyexplorer.git"
+		call :pip_install docutils
+		call :pip_install markdown
+		call :pip_install PyQt5
 	)
 
 	rem === Debugging
@@ -338,6 +365,12 @@ REM		call :pip_install zigpy-homeassistant
 	rem === Threat modelling
 	if not ""=="" (
 		call :pip_install "git+https://github.com/izar/pytm.git"
+	)
+goto :eof
+
+:pip_check
+	if not "%~1"=="" if not exist "%PYTHONSITE%\%~1" (
+		call :pip_install %~1
 	)
 goto :eof
 

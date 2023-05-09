@@ -133,6 +133,7 @@ rem - - - Subroutines - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 	if not "1"=="" (
 		call :pip_install pip
+REM		pip cache dephell
 REM		pip cache dir
 REM		pip cache purge
 	)
@@ -176,6 +177,12 @@ REM		call :pip_install remotezip
 	rem === Editor
 	if not ""=="" (
 REM		call :pip_install ash-editor
+		call :pip_install emerge-viz
+REM		call :pip_install "git+https://github.com/glato/emerge.git"
+		call :pip_install flake8
+		call :pip_install PyQt5
+		call :pip_install "git+https://github.com/andreikop/enki.git"
+		call :pip_install semgrep
 		call :pip_install suplemon
 REM		call :pip_install tui-editor
 	)
@@ -216,6 +223,8 @@ REM		call :pip_install "git+https://github.com/dexpota/pyexplorer.git"
 	if not ""=="" (
 		call :pip_install better_exceptions
 REM		call :pip_install boofuzz
+REM		call :pip_install callspectpy
+		call :pip_install crosshair-tool
 REM		call :pip_install ddebug
 REM		call :pip_install epdb
 		call :pip_install icecream
@@ -228,6 +237,8 @@ REM		call :pip_install profiling
 		call :pip_install pudb
 		call :pip_install PySnooper
 REM		call :pip_install scalene
+REM		call :pip_install skjold
+		call :pip_install "git+https://github.com/twu/skjold.git"
 		call :pip_install snoop
 REM		call :pip_install snoop-tensor
 		call :pip_install stackprinter

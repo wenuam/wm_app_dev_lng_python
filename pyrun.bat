@@ -13,6 +13,14 @@ rem Set "quiet" suffixes
 set "quiet=1>nul 2>nul"
 set "fquiet=/f /q 1>nul 2>nul"
 
+rem Recompose 'pandoc' dependencies...
+cd /d "%cd%\Tools\Pandoc"
+if exist "pandoc.exe.001" (
+	copy /y /b "pandoc.exe.001"+"pandoc.exe.002"+"pandoc.exe.003" "pandoc.exe" %quiet%
+	del "pandoc.exe.0*" %fquiet%
+)
+cd /d "%cd%"
+
 rem Python runner
 rem   (can be used for any project)
 

@@ -1,8 +1,12 @@
-Graphviz/
-Pandoc/
-PlantUML/
+#Graphviz/
+pandoc.exe
+#PlantUML/
 
 .config/
+
+decompose.bat
+fSplit.exe
+*bak
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

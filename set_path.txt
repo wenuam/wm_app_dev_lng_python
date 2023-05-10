@@ -1,2 +1,3 @@
+./Tools/ctags
 ./Tools/Graphviz/bin
 ./Tools/pandoc

@@ -168,6 +168,12 @@ REM		call :pip_install curio
 		call :pip_install trio
 	)
 
+	rem === Format support
+	if not ""=="" (
+		call :pip_install PyYAML
+		call :pip_install yaplon
+	)
+
 	rem === Path and folder
 	if not ""=="" (
 		call :pip_install dictdatabase

@@ -4,6 +4,10 @@ if "%~dp0" neq "!guid!\" (set "guid=%tmp%\crlf.%~nx0.%~z0" & set "cd=%~dp0" & (i
 rem Compile pytm files, by wenuam 2023
 rem https://github.com/izar/pytm
 
+rem Change default helpers
+set "quiet=1>nul 2>nul"
+set "fquiet=/f /q 1>nul 2>nul"
+
 set "PYTHONIOENCODING=utf8"
 
 rem Set look-up parameters
@@ -15,10 +19,6 @@ set "clst=.%~n0.lst.txt"
 set "ctpl=basic_template.md"
 set "ctpl=advanced_template.md"
 set "crep=report.html"
-
-rem Change default helpers
-set "quiet=1>nul 2>nul"
-set "fquiet=/f /q 1>nul 2>nul"
 
 rem echo Check parameter...
 if not "%1"=="" (

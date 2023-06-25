@@ -4,6 +4,10 @@ if "%~dp0" neq "!guid!\" (set "guid=%tmp%\crlf.%~nx0.%~z0" & set "cd=%~dp0" & (i
 rem Compile Diagrams files, by wenuam 2023
 rem https://github.com/mingrammer/diagrams
 
+rem Change default helpers
+set "quiet=1>nul 2>nul"
+set "fquiet=/f /q 1>nul 2>nul"
+
 set "PYTHONIOENCODING=utf8"
 
 rem Set look-up parameters
@@ -12,10 +16,6 @@ set "cout=svg"
 set "clib=diagrams"
 set "cstr=/S /I /M"
 set "clst=.%~n0.lst.txt"
-
-rem Change default helpers
-set "quiet=1>nul 2>nul"
-set "fquiet=/f /q 1>nul 2>nul"
 
 rem echo Check parameter...
 if not "%1"=="" (
@@ -59,7 +59,7 @@ REM	echo Run pytm...
 		for /f "delims=" %%i in (%clst%) do (
 REM			echo   Analysing %%~nxi...
 
-            rem Looking for output filename (specific to Diagrams)
+			rem Looking for output filename (specific to Diagrams)
 			for /f "tokens=1* delims=:" %%j in ('findstr /n /c:"with Diagram" "%%~fi"') do (
 				rem Check output filename format
 REM				echo j=%%j, k=%%k

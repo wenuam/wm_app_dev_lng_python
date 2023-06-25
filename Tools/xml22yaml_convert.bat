@@ -10,6 +10,10 @@ rem Set code page to utf-8 (/!\ this file MUST be in utf-8, BOM or not)
 for /f "tokens=2 delims=:." %%x in ('chcp') do set cp=%%x
 chcp 65001>nul
 
+rem Change default helpers
+set "quiet=1>nul 2>nul"
+set "fquiet=/f /q 1>nul 2>nul"
+
 set "PYTHONIOENCODING=utf8"
 
 rem Set look-up parameters
@@ -23,10 +27,6 @@ set "cutf=|((pause&pause&pause)>nul&findstr "^^")"
 rem Set look-up parameters
 set "carg=/B /A:-D /ON /S"
 set "clst=.%~n0.lst.txt"
-
-rem Change default helpers
-set "quiet=1>nul 2>nul"
-set "fquiet=/f /q 1>nul 2>nul"
 
 rem echo Check parameter...
 if not "%1"=="" (

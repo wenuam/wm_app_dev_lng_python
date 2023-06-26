@@ -201,10 +201,26 @@ REM		call :pip_install "git+https://github.com/glato/emerge.git"
 REM		call :pip_install tui-editor
 	)
 
+	rem === Data structure
+	if not "1"=="" (
+		call :pip_install bidict
+	)
+
 	rem === Documentation
 	if not ""=="" (
 		call :pip_install griffe
 		call :pip_install Sphinx
+	)
+
+	rem === Document conversion
+	if not ""=="" (
+REM		call :pip_install 2to3
+REM		call :pip_install pdfminer.six[image]
+REM		call :pip_install pdf-to-markdown
+REM		call :pip_install markdownify
+REM		call :pip_install textract
+		call :pip_install pymupdf
+REM		call :pip_install tabula-py
 	)
 
 	rem === Tui related
@@ -228,6 +244,7 @@ REM		call :pip_install inspectshow
 REM		call :pip_install "git+https://github.com/vadivelmurugank/inspectshow.git"
 REM		call :pip_install pyexplorer
 REM		call :pip_install "git+https://github.com/dexpota/pyexplorer.git"
+REM		call :pip_install pyspector
 		call :pip_install docutils
 		call :pip_install markdown
 		call :pip_install PyQt5
@@ -258,6 +275,8 @@ REM		call :pip_install snoop-tensor
 		call :pip_install stackprinter
 REM		call :pip_install torchsnooper
 REM		call :pip_install undent
+REM		call :pip_install validators
+		call :pip_install "git+https://github.com/python-validators/validators.git"
 		call :pip_install viztracer
 REM		call :pip_install vizplugins
 REM		call :pip_install voltron
@@ -384,12 +403,22 @@ REM		call :pip_install zigpy-homeassistant
 	rem === Graph
 	if not ""=="" (
 		call :pip_install blockdiag
+		call :pip_install data-flow-diagram
 		call :pip_install diagrams
+		call :pip_install code2flow
+		call :pip_install processpiper
+		call :pip_install pyflowchart
+		call :pip_install roadmapper
+		call :pip_install umlsequence2
 	)
 
 	rem === Threat modelling
 	if not ""=="" (
+		call :pip_install fluentm
+REM		call :pip_install pytm
 		call :pip_install "git+https://github.com/izar/pytm.git"
+REM		call :pip_install threatspec 
+		call :pip_install "git+https://github.com/threatspec/threatspec.git"
 	)
 goto :eof
 

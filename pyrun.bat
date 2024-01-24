@@ -202,7 +202,7 @@ REM		call :pip_install tui-editor
 	)
 
 	rem === Data structure
-	if not "1"=="" (
+	if not ""=="" (
 		call :pip_install bidict
 	)
 

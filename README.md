@@ -1,6 +1,7 @@
-# wm_lng_python
+# wm_app_dev_lng_python
+
 Python 3.10+ repository to serve as a self contained "virtual env"
 
 * Home
 
-https://github.com/wenuam/wm_lng_python
+https://github.com/wenuam/wm_app_dev_lng_python
